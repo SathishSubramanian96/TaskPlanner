@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.project.entity.Taskentity;
 @JaversSpringDataAuditable
-public interface taskrepoistory extends MongoRepository<Taskentity, String> {
+public interface taskrepoistory extends MongoRepository<Taskentity, Integer> {
 
-	Optional<Taskentity> findById(String id);
+	Optional<Taskentity> findById(int id);
 	Optional<Taskentity> findByTitle(String title);
 }
