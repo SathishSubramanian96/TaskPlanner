@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.entity.Taskentity;
 import com.project.repository.taskrepoistory;
+import com.project.service.SequenceGeneratorService;
 
 
 @RestController
@@ -33,7 +34,7 @@ public class Controller {
  @Autowired
  public taskrepoistory taskrepo;
  
- //retrive all the update history made to the Entity
+ //Retrieve all the update history made to the Entity
  @GetMapping("/updates")
  public String getEmployeeChanges2() {
      QueryBuilder jqlQuery = QueryBuilder.byClass(Taskentity.class)
@@ -47,7 +48,7 @@ public class Controller {
  //retrieve the objects by object id
  @GetMapping("/{id}")
  
-	public Optional<Taskentity> getTaskEntitybyTaskId(@PathVariable("id") String id) {
+	public Optional<Taskentity> getTaskEntitybyTaskId(@PathVariable("id") int id) {
 
 		return taskrepo.findById(id);
  }
@@ -66,7 +67,7 @@ public class Controller {
  //updates the data by  object id
  @PutMapping("/{id}")
  
- public ResponseEntity<Taskentity> updateTaskEntitybyTaskId(@PathVariable("id") String id, @RequestBody Taskentity tutorial) {
+ public ResponseEntity<Taskentity> updateTaskEntitybyTaskId(@PathVariable("id") Integer id, @RequestBody Taskentity tutorial) {
    Optional<Taskentity> tutorialData = taskrepo.findById(id);
 
    if (tutorialData.isPresent()) {
@@ -85,7 +86,7 @@ public class Controller {
  
  //assign to user and update status to "IN_PROGRESS"
  @PutMapping("/assign/{id}/{user}")
- public ResponseEntity<Taskentity> assignTaskEntitybyTaskId(@PathVariable("id") String id,@PathVariable("user") String user) {
+ public ResponseEntity<Taskentity> assignTaskEntitybyTaskId(@PathVariable("id") Integer id,@PathVariable("user") String user) {
    Optional<Taskentity> tutorialData = taskrepo.findById(id);
     String STATUS = "IN_PROGRESS";
    if (tutorialData.isPresent()) {
@@ -98,9 +99,14 @@ public class Controller {
    }
  }
  
+ @Autowired
+ private SequenceGeneratorService seqService;
+ 
  // creates new data 
  @PostMapping(path ="/create" ,consumes="application/json")
  public Taskentity saveBook(@RequestBody Taskentity taskent){
+	 
+	 taskent.setId(seqService.getSequenceNumber(Taskentity.SEQUENCE_NAME));
 	 return taskrepo.save(taskent);
      
      
